@@ -1,0 +1,10 @@
+package user
+
+// User is a model of a user of the service.
+type User struct {
+	ID       int    `gorm:"column:id,primaryKey" json:"id"`
+	Login    string `gorm:"column:login" json:"login"`
+	Password string `gorm:"column:password" json:"password"`
+	Name     string `gorm:"column:name" json:"name"`
+	Email    string `gorm:"column:email" json:"email"`
+}
