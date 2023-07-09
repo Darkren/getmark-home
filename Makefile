@@ -1,5 +1,6 @@
 .PHONY: requirements generate
 .PHONY: add-migration migrate
+.PHONY: build docker-build
 
 MIGRATIONS_PATH=./migrations
 
@@ -12,3 +13,11 @@ add-migration:
 
 generate:
 	go generate ./...
+
+build:
+	rm -rf bin
+	mkdir bin
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -tags=netgo -o ./bin/getmark-home ./cmd/api
+
+docker-build:
+	docker build -t getmark-home -f ./cmd/api/Dockerfile .
