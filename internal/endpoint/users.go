@@ -2,6 +2,7 @@ package endpoint
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -23,6 +24,12 @@ func AddUser(log *logrus.Logger, usersRepo user.Repository) func(gctx *gin.Conte
 
 		if err := usersRepo.Add(&u); err != nil {
 			log.Errorf("userRepo.Add: %v\n", err)
+
+			if strings.Contains(err.Error(), "duplicate key") {
+				gctx.AbortWithStatus(http.StatusConflict)
+				return
+			}
+
 			gctx.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
