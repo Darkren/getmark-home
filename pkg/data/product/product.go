@@ -2,11 +2,9 @@ package product
 
 import "github.com/Darkren/getmark-home/pkg/data/user"
 
-//go:generate mockery --name Repository --filename mock_repository.go --output ./ --inpackage
-
 // Product is a model of a product.
 type Product struct {
-	Barcode string `gorm:"column:barcode,primaryKey" json:"barcode"`
+	Barcode string `gorm:"column:barcode;primaryKey" json:"barcode"`
 	Name    string `gorm:"column:name" json:"name"`
 	Desc    string `gorm:"column:desc" json:"desc"`
 	Cost    int64  `gorm:"column:cost" json:"cost"`

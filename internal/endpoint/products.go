@@ -51,6 +51,12 @@ func AddProduct(log *logrus.Logger, authService auth.Service,
 
 		if err := productsRepo.Add(&p); err != nil {
 			log.Errorf("productsRepo.Add: %v\n", err)
+
+			if strings.Contains(err.Error(), "duplicate key") {
+				gctx.AbortWithStatus(http.StatusConflict)
+				return
+			}
+
 			gctx.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
@@ -71,11 +77,7 @@ func DeleteProduct(log *logrus.Logger, authService auth.Service,
 
 		log = log.WithFields(logrus.Fields{"login": login})
 
-		barcode := gctx.Request.URL.Query().Get("barcode")
-		if barcode == "" {
-			gctx.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
+		barcode := gctx.Param("barcode")
 
 		user, err := usersRepo.UserByLogin(login)
 		if err != nil {
@@ -324,6 +326,8 @@ func mustValidateToken(gctx *gin.Context, log *logrus.Entry, authService auth.Se
 		gctx.AbortWithStatus(http.StatusBadRequest)
 		return "", false
 	}
+
+	tokenStr = strings.TrimPrefix(tokenStr, "Bearer ")
 
 	token, err := auth.NewToken(tokenStr)
 	if err != nil {

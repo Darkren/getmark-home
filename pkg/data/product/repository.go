@@ -1,5 +1,7 @@
 package product
 
+//go:generate mockery --name Repository --filename mock_repository.go --output ./ --inpackage
+
 // Repository provides methods to manage Product objects.
 type Repository interface {
 	Add(p *Product) error
