@@ -24,3 +24,5 @@ go.work
 mock_*
 getmark-home
 tags
+
+bin

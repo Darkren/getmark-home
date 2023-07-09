@@ -67,11 +67,10 @@ var rootCmd = &cobra.Command{
 			return fmt.Errorf("auth.NewHTTPService: %w", err)
 		}
 
-		//listen := viper.GetString(listenFlag)
+		listen := viper.GetString(listenFlag)
 		shutdownTimeout := viper.GetDuration(shutdownTimeoutFlag)
 		handler := endpoint.CreateRouter(logrus.New(), authService, usersRepo, productsRepo, priceTagService)
 
-		listen := ":8081"
 		return api.Run(listen, handler, api.WithShutdownTimeout(shutdownTimeout))
 	},
 }
