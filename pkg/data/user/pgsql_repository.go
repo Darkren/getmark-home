@@ -30,3 +30,18 @@ func (r *PgSQLRepository) Add(u *User) error {
 
 	return nil
 }
+
+// UserByLogin gets a User by their login.
+func (r *PgSQLRepository) UserByLogin(login string) (*User, error) {
+	var user User
+	err := r.db.Table("users").Where("login = $1", login).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("db.First: %w", err)
+	}
+
+	return &user, nil
+}
