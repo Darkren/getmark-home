@@ -13,6 +13,8 @@ import (
 // AddUser is the endpoint registering new user in the system.
 func AddUser(log *logrus.Logger, usersRepo user.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
+		log := log.WithFields(logrus.Fields{"endpoint": "AddUser"})
+
 		var u user.User
 		if err := gctx.Bind(&u); err != nil {
 			gctx.AbortWithStatus(http.StatusBadRequest)
@@ -43,13 +45,15 @@ type AuthResponse struct {
 // Auth is the endpoint performing authentication of a user in the system.
 func Auth(log *logrus.Logger, authService auth.Service, usersRepo user.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
+		log := log.WithFields(logrus.Fields{"endpoint": "Auth"})
+
 		var req AuthRequest
 		if err := gctx.Bind(&req); err != nil {
 			gctx.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		log := log.WithFields(logrus.Fields{"login": req.Login})
+		log = log.WithFields(logrus.Fields{"login": req.Login})
 
 		user, err := usersRepo.UserByLogin(req.Login)
 		if err != nil {
@@ -75,7 +79,7 @@ func Auth(log *logrus.Logger, authService auth.Service, usersRepo user.Repositor
 		}
 
 		resp := AuthResponse{
-			Token: token,
+			Token: token.Token,
 		}
 
 		gctx.JSON(http.StatusOK, &resp)

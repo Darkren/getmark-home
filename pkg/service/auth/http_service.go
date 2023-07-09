@@ -27,27 +27,32 @@ func NewHTTPService(httpCl *http.Client, urlStr string) (Service, error) {
 }
 
 // Auth authorizes user with the provided login and returns issued JWT token.
-func (s *httpService) Auth(login string) (string, error) {
+func (s *httpService) Auth(login string) (*Token, error) {
 	if err := s.ping(); err != nil {
-		return "", fmt.Errorf("ping: %w", err)
+		return nil, fmt.Errorf("ping: %w", err)
 	}
 
-	token, err := s.doRequest(http.MethodGet, s.baseURL+"/generate?login="+login, nil)
+	tokenStr, err := s.doRequest(http.MethodGet, s.baseURL+"/generate?login="+login, nil)
 	if err != nil {
-		return "", fmt.Errorf("doRequest: %w", err)
+		return nil, fmt.Errorf("doRequest: %w", err)
 	}
 
-	return string(token), nil
+	token, err := NewToken(string(tokenStr))
+	if err != nil {
+		return nil, fmt.Errorf("newToken: %w", err)
+	}
+
+	return token, nil
 }
 
 // ValidateToken validates provided token.
-func (s *httpService) ValidateToken(token string) error {
+func (s *httpService) ValidateToken(token *Token) error {
 	if err := s.ping(); err != nil {
 		return fmt.Errorf("ping: %w", err)
 	}
 
 	_, err := s.doRequest(http.MethodGet, s.baseURL+"/validate", map[string]string{
-		"Authorization": "Bearer " + token,
+		"Authorization": "Bearer " + token.Token,
 	})
 	if err != nil {
 		return fmt.Errorf("doRequest: %w", err)
