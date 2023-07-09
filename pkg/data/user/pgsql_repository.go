@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -17,7 +18,7 @@ func NewPgSQLRepository(db *gorm.DB) Repository {
 	}
 }
 
-// Add adds a user to the storage.
+// Add adds a User to the storage.
 func (r *PgSQLRepository) Add(u *User) error {
 	if u == nil {
 		return nil
