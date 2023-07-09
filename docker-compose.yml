@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  auth-generator:
+    image: andrianovartemii/gm-test-task-auth-generator:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - internal
+    environment:
+      AUTH_TOKEN_LIFETIME: 200
+
+  pgsql:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    networks:
+      - internal
+    environment:
+      POSTGRES_PASSWORD: getmark
+      POSTGRES_USER: getmark
+      POSTGRES_DB: getmark
+
+  getmark-home:
+    image: getmark-home
+    depends_on:
+      - pgsql
+      - auth-generator
+    ports:
+      - "8081:8080"
+    networks:
+      - internal
+    environment:
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_NAME: getmark
+      DB_USER: getmark
+      DB_PASSWORD: getmark
+      DB_SSL_MODE: disable
+      AUTH_SERVICE_URL: http://auth-generator:8080
+
+networks:
+  internal:
+    driver: bridge

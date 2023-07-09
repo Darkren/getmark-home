@@ -1,6 +1,6 @@
 FROM golang:alpine
 COPY ./bin/getmark-home /release/
-COPY ./cmd/api/config.env /release/
+COPY ./assets /release/assets
 RUN mkdir /release/tags
 
 WORKDIR "/release"

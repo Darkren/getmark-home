@@ -1,14 +1,35 @@
 package db
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/spf13/viper"
+)
 
 type PgSQLConfig struct {
-	Host     string `mapstructure:"DB_HOST"`
-	Port     int    `mapstructure:"DB_PORT"`
-	DBName   string `mapstructure:"DB_NAME"`
-	User     string `mapstructure:"DB_USER"`
-	Password string `mapstructure:"DB_PASSWORD"`
-	SSLMode  string `mapstructure:"DB_SSL_MODE"`
+	Host     string
+	Port     int
+	DBName   string
+	User     string
+	Password string
+	SSLMode  string
+}
+
+func PgSQLConfigFromEnv() PgSQLConfig {
+	host := viper.GetString("DB_HOST")
+	port := viper.GetInt("DB_PORT")
+	dbName := viper.GetString("DB_NAME")
+	user := viper.GetString("DB_USER")
+	password := viper.GetString("DB_PASSWORD")
+	sslMode := viper.GetString("DB_SSL_MODE")
+
+	return PgSQLConfig{
+		Host:     host,
+		Port:     port,
+		DBName:   dbName,
+		User:     user,
+		Password: password,
+		SSLMode:  sslMode,
+	}
 }
 
 func (c PgSQLConfig) ToDriverDSN() string {
