@@ -5,4 +5,5 @@ package user
 // Repository provides methods to manage User objects.
 type Repository interface {
 	Add(u *User) error
+	UserByLogin(login string) (*User, error)
 }
