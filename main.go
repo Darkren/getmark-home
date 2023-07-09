@@ -10,5 +10,4 @@ func main() {
 	fmt.Printf("%v\n", token)*/
 
 	// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InF3ZSIsImV4cCI6MTY4ODczMjQ4MX0.FZOicPexcVQz1jeof_SOVIVxEWarUIqhgCJ1lvKkI68
-
 }
