@@ -1,6 +1,6 @@
 .PHONY: requirements generate
 .PHONY: add-migration migrate
-.PHONY: build docker-build
+.PHONY: build docker-build run
 
 MIGRATIONS_PATH=./migrations
 
@@ -21,3 +21,8 @@ build:
 
 docker-build:
 	docker build -t getmark-home -f ./cmd/api/Dockerfile .
+	docker build -t migrations -f ./migrations/Dockerfile .
+
+run: build docker-build
+	docker compose up
+
