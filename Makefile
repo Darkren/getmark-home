@@ -11,7 +11,7 @@ requirements:
 add-migration:
 	MIGRATIONS_PATH=$(MIGRATIONS_PATH) bash ./migrations/add-migration.sh
 
-generate:
+generate: requirements
 	go generate ./...
 
 build: requirements
