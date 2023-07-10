@@ -17,6 +17,14 @@ import (
 	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 )
 
+// AddProductRequest is the request to add product to the system.
+type AddProductRequest struct {
+	Barcode string `json:"barcode"`
+	Name    string `json:"name"`
+	Desc    string `json:"desc"`
+	Cost    int64  `json:"cost"`
+}
+
 // AddProduct is the endpoint which add new product to the system.
 func AddProduct(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
@@ -30,8 +38,13 @@ func AddProduct(log *logrus.Logger, authService auth.Service,
 
 		log = log.WithFields(logrus.Fields{"login": login})
 
-		var p product.Product
-		if err := gctx.Bind(&p); err != nil {
+		var req AddProductRequest
+		if err := gctx.Bind(&req); err != nil {
+			gctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if req.Name == "" || req.Barcode == "" || req.Desc == "" {
 			gctx.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -48,7 +61,13 @@ func AddProduct(log *logrus.Logger, authService auth.Service,
 			return
 		}
 
-		p.UserID = user.ID
+		p := product.Product{
+			Barcode: req.Barcode,
+			Name:    req.Name,
+			Desc:    req.Desc,
+			Cost:    req.Cost,
+			UserID:  user.ID,
+		}
 
 		if err := productsRepo.Add(&p); err != nil {
 			log.Errorf("productsRepo.Add: %v\n", err)

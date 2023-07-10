@@ -11,18 +11,37 @@ import (
 	"github.com/Darkren/getmark-home/pkg/service/auth"
 )
 
+// AddUserRequest is the request to add user to the system.
+type AddUserRequest struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+}
+
 // AddUser is the endpoint registering new user in the system.
 func AddUser(log *logrus.Logger, usersRepo user.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "AddUser"})
 
-		var u user.User
-		if err := gctx.Bind(&u); err != nil {
+		var req AddUserRequest
+		if err := gctx.Bind(&req); err != nil {
 			gctx.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		if err := usersRepo.Add(&u); err != nil {
+		if req.Login == "" || req.Password == "" || req.Name == "" || req.Email == "" {
+			gctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		err := usersRepo.Add(&user.User{
+			Login:    req.Login,
+			Password: req.Password,
+			Name:     req.Name,
+			Email:    req.Email,
+		})
+		if err != nil {
 			log.Errorf("userRepo.Add: %v\n", err)
 
 			if strings.Contains(err.Error(), "duplicate key") {

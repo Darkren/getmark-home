@@ -9,7 +9,7 @@ type Product struct {
 	Name    string `gorm:"column:name" json:"name"`
 	Desc    string `gorm:"column:desc" json:"desc"`
 	Cost    int64  `gorm:"column:cost" json:"cost"`
-	UserID  int64  `gorm:"user_id" json:"user_id"`
+	UserID  int64  `gorm:"user_id" json:"-"`
 
 	User user.User `gorm:"foreignKey:UserID" json:"-"`
 }

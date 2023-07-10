@@ -17,6 +17,8 @@
 }
 ```
 
+Все поля являются обязательными.
+
 #### Возможные коды ответа:
 - 200
 - 400
@@ -61,7 +63,7 @@ Authorization: Bearer ${TOKEN}
 
 ### POST /products/
 
-Добавляет новый товар пользователя в систему.
+Добавляет новый товар пользователя в систему. 
 
 Пример тела запроса:
 
@@ -73,6 +75,8 @@ Authorization: Bearer ${TOKEN}
   "cost": 1423
 }
 ```
+
+Все поля, кроме `cost` обязательны. В случае отстутствия, `cost` считается равным 0.
 
 #### Возможные коды ответа:
 
@@ -107,8 +111,7 @@ Authorization: Bearer ${TOKEN}
     "barcode": "barcode1",
     "name": "name1",
     "desc": "some description 1",
-    "cost": 1423,
-    "user_id": 1
+    "cost": 1423
   }
 ]
 ```
@@ -130,8 +133,7 @@ Authorization: Bearer ${TOKEN}
   "barcode": "barcode1",
   "name": "name1",
   "desc": "some description 1",
-  "cost": 1423,
-  "user_id": 1
+  "cost": 1423
 }
 ```
 - 400
