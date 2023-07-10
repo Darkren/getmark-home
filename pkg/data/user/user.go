@@ -1,3 +1,4 @@
+// Package user contains User model and its repository.
 package user
 
 // User is a model of a user of the service.

@@ -17,6 +17,7 @@ import (
 	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 )
 
+// AddProduct is the endpoint which add new product to the system.
 func AddProduct(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
@@ -65,6 +66,7 @@ func AddProduct(log *logrus.Logger, authService auth.Service,
 	}
 }
 
+// DeleteProduct is the endpoint which deletes product from the system.
 func DeleteProduct(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
@@ -104,6 +106,7 @@ func DeleteProduct(log *logrus.Logger, authService auth.Service,
 	}
 }
 
+// ListProducts is the endpoint which returns complete list of existing products to a client.
 func ListProducts(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
@@ -144,6 +147,7 @@ func ListProducts(log *logrus.Logger, authService auth.Service,
 	}
 }
 
+// GetProduct is the endpoint which returns a single product.
 func GetProduct(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
@@ -189,6 +193,8 @@ func GetProduct(log *logrus.Logger, authService auth.Service,
 	}
 }
 
+// GeneratePriceTag is the endpoint which generates a price tag file for the
+// specified product.
 func GeneratePriceTag(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository,
 	priceTagService pricetag.Service) func(gctx *gin.Context) {
@@ -263,6 +269,7 @@ func GeneratePriceTag(log *logrus.Logger, authService auth.Service,
 	}
 }
 
+// GetPriceTag is the endpoint which returns existing generated price tag file.
 func GetPriceTag(log *logrus.Logger, authService auth.Service,
 	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
@@ -320,6 +327,8 @@ func GetPriceTag(log *logrus.Logger, authService auth.Service,
 	}
 }
 
+// mustValidateToken validates token and extracts login out of it. In case validation is failed
+// request is aborted with the corresponding status.
 func mustValidateToken(gctx *gin.Context, log *logrus.Entry, authService auth.Service) (string, bool) {
 	tokenStr := gctx.Request.Header.Get("Authorization")
 	if tokenStr == "" {

@@ -1,3 +1,4 @@
+// Package product contains Product model and its repository.
 package product
 
 import "github.com/Darkren/getmark-home/pkg/data/user"
