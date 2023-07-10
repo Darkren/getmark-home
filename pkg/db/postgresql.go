@@ -3,6 +3,7 @@ package db
 
 import (
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 

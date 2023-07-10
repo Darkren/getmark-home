@@ -9,7 +9,7 @@ requirements:
 	go install github.com/vektra/mockery/v2@v2.30.1
 
 add-migration:
-	MIGRATIONS_PATH=$(MIGRATIONS_PATH) bash ./add-migration.sh
+	MIGRATIONS_PATH=$(MIGRATIONS_PATH) bash ./migrations/add-migration.sh
 
 generate:
 	go generate ./...
@@ -23,6 +23,6 @@ docker-build:
 	docker build -t getmark-home -f ./cmd/api/Dockerfile .
 	docker build -t migrations -f ./migrations/Dockerfile .
 
-run: build docker-build
+run: requirements build docker-build
 	docker compose up
 

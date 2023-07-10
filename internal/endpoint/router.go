@@ -1,15 +1,15 @@
 package endpoint
 
 import (
-	"github.com/Darkren/getmark-home/pkg/data/product"
-	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
+	"github.com/Darkren/getmark-home/pkg/data/product"
 	"github.com/Darkren/getmark-home/pkg/data/user"
 	"github.com/Darkren/getmark-home/pkg/service/auth"
+	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 )
 
 // CreateRouter creates router with all the API endpoints.
