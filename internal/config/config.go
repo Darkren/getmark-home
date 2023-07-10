@@ -1,3 +1,4 @@
+// Package config contains configuration for the service.
 package config
 
 import (
@@ -6,11 +7,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config is the service configuration.
 type Config struct {
 	DB          db.PgSQLConfig
 	AuthService auth.Config
 }
 
+// FromEnv build configuration based on env vars.
 func FromEnv() (*Config, error) {
 	viper.AutomaticEnv()
 

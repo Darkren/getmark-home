@@ -1,3 +1,4 @@
+// Package api contains facilities to run an API service.
 package api
 
 import (

@@ -1,3 +1,4 @@
+// Package db contains structures related to DB usage.
 package db
 
 import (
@@ -5,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// PgSQLConfig is the configuration for the PostgreSQL connection.
 type PgSQLConfig struct {
 	Host     string
 	Port     int
@@ -14,6 +16,7 @@ type PgSQLConfig struct {
 	SSLMode  string
 }
 
+// PgSQLConfigFromEnv constructs PgSQLConfig based on env vars.
 func PgSQLConfigFromEnv() PgSQLConfig {
 	host := viper.GetString("DB_HOST")
 	port := viper.GetInt("DB_PORT")
@@ -32,6 +35,7 @@ func PgSQLConfigFromEnv() PgSQLConfig {
 	}
 }
 
+// ToDriverDSN formats PgSQLConfig as the DSN string.
 func (c PgSQLConfig) ToDriverDSN() string {
 	return fmt.Sprintf("user=%s password=%s dbname=%s port=%d sslmode=%s host=%s", c.User, c.Password, c.DBName,
 		c.Port, c.SSLMode, c.Host)

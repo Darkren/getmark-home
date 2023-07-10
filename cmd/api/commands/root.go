@@ -1,3 +1,4 @@
+// Package commands contains CLI commands for the service.
 package commands
 
 import (
