@@ -33,8 +33,10 @@ services:
   getmark-home:
     image: getmark-home
     depends_on:
-      - migrations
-      - auth-generator
+      migrations:
+        condition: service_completed_successfully
+      auth-generator:
+        condition: service_started
     ports:
       - "8081:8080"
     networks:
