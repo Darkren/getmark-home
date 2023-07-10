@@ -284,6 +284,9 @@ func GeneratePriceTag(log *logrus.Logger, authService auth.Service,
 			return
 		}
 
+		log.WithFields(logrus.Fields{"file_name": strings.TrimPrefix(filePath, "tags/")}).
+			Infoln("Generated price tag")
+
 		gctx.File(filePath)
 	}
 }
