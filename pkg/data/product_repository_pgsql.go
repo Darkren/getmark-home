@@ -1,25 +1,27 @@
-package product
+package data
 
 import (
 	"fmt"
 
 	"gorm.io/gorm"
+
+	"github.com/Darkren/getmark-home/pkg/data/schema"
 )
 
-// PgSQLRepository implements Repository using PostgreSQL as an internal storage.
-type PgSQLRepository struct {
+// ProductRepositoryPgSQL implements ProductRepository using PostgreSQL as an internal storage.
+type ProductRepositoryPgSQL struct {
 	db *gorm.DB
 }
 
-// NewPgSQLRepository constructs an instance of PgSQLRepository.
-func NewPgSQLRepository(db *gorm.DB) Repository {
-	return &PgSQLRepository{
+// NewProductRepositoryPgSQL constructs an instance of ProductRepositoryPgSQL.
+func NewProductRepositoryPgSQL(db *gorm.DB) ProductRepository {
+	return &ProductRepositoryPgSQL{
 		db: db,
 	}
 }
 
 // Add adds a Product to the storage.
-func (r *PgSQLRepository) Add(p *Product) error {
+func (r *ProductRepositoryPgSQL) Add(p *schema.Product) error {
 	if p == nil {
 		return nil
 	}
@@ -34,8 +36,8 @@ func (r *PgSQLRepository) Add(p *Product) error {
 // Delete deletes a Product from the storage.
 // Only deletes a Product with the specified barcode belonging to a User with
 // the specified userID.
-func (r *PgSQLRepository) Delete(barcode string, userID int64) error {
-	if err := r.db.Delete(&Product{}, "barcode = $1 AND user_id = $2", barcode, userID).Error; err != nil {
+func (r *ProductRepositoryPgSQL) Delete(barcode string, userID int64) error {
+	if err := r.db.Delete(&schema.Product{}, "barcode = $1 AND user_id = $2", barcode, userID).Error; err != nil {
 		return fmt.Errorf("db.Delete: %w", err)
 	}
 
@@ -43,8 +45,8 @@ func (r *PgSQLRepository) Delete(barcode string, userID int64) error {
 }
 
 // List returns all Products belonging to a User with the specified userID.
-func (r *PgSQLRepository) List(userID int64) ([]Product, error) {
-	var products []Product
+func (r *ProductRepositoryPgSQL) List(userID int64) ([]schema.Product, error) {
+	var products []schema.Product
 	err := r.db.Table("products").Where("user_id = $1", userID).Find(&products).Error
 	if err != nil {
 		return nil, fmt.Errorf("db.Find: %w", err)
@@ -55,8 +57,8 @@ func (r *PgSQLRepository) List(userID int64) ([]Product, error) {
 
 // Product returns a product having specified barcode and belonging to a User with
 // the specified userID.
-func (r *PgSQLRepository) Product(barcode string, userID int64) (*Product, error) {
-	var product Product
+func (r *ProductRepositoryPgSQL) Product(barcode string, userID int64) (*schema.Product, error) {
+	var product schema.Product
 	err := r.db.First(&product, "barcode = $1 AND user_id = $2", barcode, userID).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

@@ -9,12 +9,12 @@ requirements:
 	go install github.com/vektra/mockery/v2@v2.30.1
 
 add-migration:
-	MIGRATIONS_PATH=$(MIGRATIONS_PATH) bash ./add-migration.sh
+	MIGRATIONS_PATH=$(MIGRATIONS_PATH) bash ./migrations/add-migration.sh
 
 generate:
 	go generate ./...
 
-build:
+build: requirements
 	rm -rf bin
 	mkdir bin
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -tags=netgo -o ./bin/getmark-home ./cmd/api

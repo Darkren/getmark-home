@@ -2,9 +2,10 @@
 package config
 
 import (
+	"github.com/spf13/viper"
+
 	"github.com/Darkren/getmark-home/pkg/db"
 	"github.com/Darkren/getmark-home/pkg/service/auth"
-	"github.com/spf13/viper"
 )
 
 // Config is the service configuration.

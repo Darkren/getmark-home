@@ -3,22 +3,20 @@ package commands
 
 import (
 	"fmt"
-	"github.com/Darkren/getmark-home/internal/config"
-	"github.com/Darkren/getmark-home/internal/endpoint"
-	"github.com/Darkren/getmark-home/pkg/api"
-	"github.com/Darkren/getmark-home/pkg/data/product"
-	"github.com/Darkren/getmark-home/pkg/data/user"
-	"github.com/Darkren/getmark-home/pkg/service/auth"
-	"github.com/Darkren/getmark-home/pkg/service/pricetag"
+	"github.com/Darkren/getmark-home/pkg/data"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"github.com/Darkren/getmark-home/internal/config"
+	"github.com/Darkren/getmark-home/internal/endpoint"
+	"github.com/Darkren/getmark-home/pkg/api"
+	"github.com/Darkren/getmark-home/pkg/service/auth"
+	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 )
 
 const (
@@ -35,6 +33,8 @@ var rootCmd = &cobra.Command{
 	Short: "Starts the API",
 	Long:  "Starts the API",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		log := logrus.New()
+
 		cfg, err := config.FromEnv()
 		if err != nil {
 			return fmt.Errorf("config.FromEnv: %w", err)
@@ -44,33 +44,29 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("gorm.Open: %w", err)
 		}
+		defer func() {
+			sqlConn, err := db.DB()
+			if err != nil {
+				log.Errorf("db.DB: %v\n", err)
+			}
 
-		usersRepo := user.NewPgSQLRepository(db)
-		productsRepo := product.NewPgSQLRepository(db)
+			if err := sqlConn.Close(); err != nil {
+				log.Errorf("sqlConn.Close: %v\n", err)
+			}
+		}()
+
+		usersRepo := data.NewUserRepositoryPgSQL(db)
+		productsRepo := data.NewProductRepositoryPgSQL(db)
 		priceTagService := pricetag.NewPDFService()
 
-		tr := &http.Transport{
-			MaxIdleConns:          10,
-			IdleConnTimeout:       15 * time.Second,
-			ResponseHeaderTimeout: 15 * time.Second,
-			DisableKeepAlives:     false,
-		}
-		httpCl := &http.Client{
-			Transport: tr,
-			// do not follow redirects
-			CheckRedirect: func(req *http.Request, via []*http.Request) error {
-				return http.ErrUseLastResponse
-			},
-		}
-
-		authService, err := auth.NewHTTPService(httpCl, cfg.AuthService.URL)
+		authService, err := auth.NewHTTPService(&http.Client{Transport: &http.Transport{}}, cfg.AuthService.URL)
 		if err != nil {
 			return fmt.Errorf("auth.NewHTTPService: %w", err)
 		}
 
 		listen := viper.GetString(listenFlag)
 		shutdownTimeout := viper.GetDuration(shutdownTimeoutFlag)
-		handler := endpoint.CreateRouter(logrus.New(), authService, usersRepo, productsRepo, priceTagService)
+		handler := endpoint.CreateRouter(log, authService, usersRepo, productsRepo, priceTagService)
 
 		return api.Run(listen, handler, api.WithShutdownTimeout(shutdownTimeout))
 	},
@@ -92,7 +88,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP(listenFlag, "l", "", "address to listen on")
 	rootCmd.PersistentFlags().String(shutdownTimeoutFlag, defaultShutdownTimeout, "shutdown timeout")
 
-	//rootCmd.MarkPersistentFlagRequired(listenFlag)
+	rootCmd.MarkPersistentFlagRequired(listenFlag)
 
 	viper.BindPFlags(rootCmd.PersistentFlags())
 	viper.BindPFlags(rootCmd.Flags())
