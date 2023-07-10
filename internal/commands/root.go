@@ -3,6 +3,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/Darkren/getmark-home/pkg/data"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -14,8 +15,6 @@ import (
 	"github.com/Darkren/getmark-home/internal/config"
 	"github.com/Darkren/getmark-home/internal/endpoint"
 	"github.com/Darkren/getmark-home/pkg/api"
-	"github.com/Darkren/getmark-home/pkg/data/product"
-	"github.com/Darkren/getmark-home/pkg/data/user"
 	"github.com/Darkren/getmark-home/pkg/service/auth"
 	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 )
@@ -56,8 +55,8 @@ var rootCmd = &cobra.Command{
 			}
 		}()
 
-		usersRepo := user.NewPgSQLRepository(db)
-		productsRepo := product.NewPgSQLRepository(db)
+		usersRepo := data.NewUserRepositoryPgSQL(db)
+		productsRepo := data.NewProductRepositoryPgSQL(db)
 		priceTagService := pricetag.NewPDFService()
 
 		authService, err := auth.NewHTTPService(&http.Client{Transport: &http.Transport{}}, cfg.AuthService.URL)

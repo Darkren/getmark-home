@@ -1,7 +1,4 @@
-// Package product contains Product model and its repository.
-package product
-
-import "github.com/Darkren/getmark-home/pkg/data/user"
+package schema
 
 // Product is a model of a product.
 type Product struct {
@@ -11,5 +8,5 @@ type Product struct {
 	Cost    int64  `gorm:"column:cost" json:"cost"`
 	UserID  int64  `gorm:"user_id" json:"-"`
 
-	User user.User `gorm:"foreignKey:UserID" json:"-"`
+	User User `gorm:"foreignKey:UserID" json:"-"`
 }

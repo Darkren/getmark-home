@@ -1,6 +1,8 @@
 package endpoint
 
 import (
+	"github.com/Darkren/getmark-home/pkg/data"
+	"github.com/Darkren/getmark-home/pkg/data/schema"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -11,8 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Darkren/getmark-home/pkg/data/product"
-	"github.com/Darkren/getmark-home/pkg/data/user"
 	"github.com/Darkren/getmark-home/pkg/service/auth"
 	"github.com/Darkren/getmark-home/pkg/service/pricetag"
 )
@@ -27,7 +27,7 @@ type AddProductRequest struct {
 
 // AddProduct is the endpoint which add new product to the system.
 func AddProduct(log *logrus.Logger, authService auth.Service,
-	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
+	usersRepo data.UserRepository, productsRepo data.ProductRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "AddProduct"})
 
@@ -61,7 +61,7 @@ func AddProduct(log *logrus.Logger, authService auth.Service,
 			return
 		}
 
-		p := product.Product{
+		p := schema.Product{
 			Barcode: req.Barcode,
 			Name:    req.Name,
 			Desc:    req.Desc,
@@ -87,7 +87,7 @@ func AddProduct(log *logrus.Logger, authService auth.Service,
 
 // DeleteProduct is the endpoint which deletes product from the system.
 func DeleteProduct(log *logrus.Logger, authService auth.Service,
-	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
+	usersRepo data.UserRepository, productsRepo data.ProductRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "DeleteProduct"})
 
@@ -127,7 +127,7 @@ func DeleteProduct(log *logrus.Logger, authService auth.Service,
 
 // ListProducts is the endpoint which returns complete list of existing products to a client.
 func ListProducts(log *logrus.Logger, authService auth.Service,
-	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
+	usersRepo data.UserRepository, productsRepo data.ProductRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "ListProducts"})
 
@@ -168,7 +168,7 @@ func ListProducts(log *logrus.Logger, authService auth.Service,
 
 // GetProduct is the endpoint which returns a single product.
 func GetProduct(log *logrus.Logger, authService auth.Service,
-	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
+	usersRepo data.UserRepository, productsRepo data.ProductRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "GetProduct"})
 
@@ -215,7 +215,7 @@ func GetProduct(log *logrus.Logger, authService auth.Service,
 // GeneratePriceTag is the endpoint which generates a price tag file for the
 // specified product.
 func GeneratePriceTag(log *logrus.Logger, authService auth.Service,
-	usersRepo user.Repository, productsRepo product.Repository,
+	usersRepo data.UserRepository, productsRepo data.ProductRepository,
 	priceTagService pricetag.Service) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "GeneratePriceTag"})
@@ -290,7 +290,7 @@ func GeneratePriceTag(log *logrus.Logger, authService auth.Service,
 
 // GetPriceTag is the endpoint which returns existing generated price tag file.
 func GetPriceTag(log *logrus.Logger, authService auth.Service,
-	usersRepo user.Repository, productsRepo product.Repository) func(gctx *gin.Context) {
+	usersRepo data.UserRepository, productsRepo data.ProductRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "GeneratePriceTag"})
 

@@ -1,13 +1,14 @@
 package endpoint
 
 import (
+	"github.com/Darkren/getmark-home/pkg/data"
+	"github.com/Darkren/getmark-home/pkg/data/schema"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Darkren/getmark-home/pkg/data/user"
 	"github.com/Darkren/getmark-home/pkg/service/auth"
 )
 
@@ -20,7 +21,7 @@ type AddUserRequest struct {
 }
 
 // AddUser is the endpoint registering new user in the system.
-func AddUser(log *logrus.Logger, usersRepo user.Repository) func(gctx *gin.Context) {
+func AddUser(log *logrus.Logger, usersRepo data.UserRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "AddUser"})
 
@@ -35,7 +36,7 @@ func AddUser(log *logrus.Logger, usersRepo user.Repository) func(gctx *gin.Conte
 			return
 		}
 
-		err := usersRepo.Add(&user.User{
+		err := usersRepo.Add(&schema.User{
 			Login:    req.Login,
 			Password: req.Password,
 			Name:     req.Name,
@@ -69,7 +70,7 @@ type AuthResponse struct {
 }
 
 // Auth is the endpoint performing authentication of a user in the system.
-func Auth(log *logrus.Logger, authService auth.Service, usersRepo user.Repository) func(gctx *gin.Context) {
+func Auth(log *logrus.Logger, authService auth.Service, usersRepo data.UserRepository) func(gctx *gin.Context) {
 	return func(gctx *gin.Context) {
 		log := log.WithFields(logrus.Fields{"endpoint": "Auth"})
 
