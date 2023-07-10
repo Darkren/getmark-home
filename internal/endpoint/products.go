@@ -332,7 +332,7 @@ func GetPriceTag(log *logrus.Logger, authService auth.Service,
 func mustValidateToken(gctx *gin.Context, log *logrus.Entry, authService auth.Service) (string, bool) {
 	tokenStr := gctx.Request.Header.Get("Authorization")
 	if tokenStr == "" {
-		gctx.AbortWithStatus(http.StatusBadRequest)
+		gctx.AbortWithStatus(http.StatusUnauthorized)
 		return "", false
 	}
 

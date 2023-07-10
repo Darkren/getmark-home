@@ -14,7 +14,7 @@ add-migration:
 generate:
 	go generate ./...
 
-build:
+build: requirements
 	rm -rf bin
 	mkdir bin
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -tags=netgo -o ./bin/getmark-home ./cmd/api
@@ -23,6 +23,6 @@ docker-build:
 	docker build -t getmark-home -f ./cmd/api/Dockerfile .
 	docker build -t migrations -f ./migrations/Dockerfile .
 
-run: requirements build docker-build
+run: build docker-build
 	docker compose up
 
